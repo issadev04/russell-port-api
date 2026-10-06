@@ -1,65 +1,16 @@
 const express = require("express");
-const Reservation = require("../models/Reservation");
+const reservationsController = require("../src/controllers/reservationsController");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.get("/:catwayNumber", async (req, res) => {
-  try {
-    const reservations = await Reservation.find({
-      catwayNumber: req.params.catwayNumber,
-    });
+router.get("/", reservationsController.getReservationsByCatway);
 
-    res.json(reservations);
-  } catch (error) {
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-});
+router.get("/:idReservation", reservationsController.getReservationById);
 
-router.post("/:catwayNumber", async (req, res) => {
-  try {
-    const reservation = new Reservation({
-  ...req.body,
-  catwayNumber: req.params.catwayNumber,
-});
+router.post("/", reservationsController.createReservation);
 
-    const savedReservation = await reservation.save();
+router.put("/:idReservation", reservationsController.updateReservation);
 
-    res.status(201).json(savedReservation);
-  } catch (error) {
-    res.status(400).json({ message: "Données invalides" });
-  }
-});
-
-router.put("/:id", async (req, res) => {
-  try {
-    const reservation = await Reservation.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!reservation) {
-      return res.status(404).json({ message: "Réservation introuvable" });
-    }
-
-    res.json(reservation);
-  } catch (error) {
-    res.status(400).json({ message: "Données invalides" });
-  }
-});
-
-router.delete("/:id", async (req, res) => {
-  try {
-    const reservation = await Reservation.findByIdAndDelete(req.params.id);
-
-    if (!reservation) {
-      return res.status(404).json({ message: "Réservation introuvable" });
-    }
-
-    res.json({ message: "Réservation supprimée" });
-  } catch (error) {
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-});
+router.delete("/:idReservation", reservationsController.deleteReservation);
 
 module.exports = router;
