@@ -1,6 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
+
+const usersController = require("./controllers/usersController");
 
 const catwaysRouter = require("./routes/catways");
 const reservationsRouter = require("./routes/reservations");
@@ -9,7 +12,10 @@ const usersRouter = require("./routes/users");
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
+app.post("/login", usersController.login);
+app.get("/logout", usersController.logout);
 app.get("/", (req, res) => {
     res.json({ message: "API Port de Plaisance Russell" });
 });

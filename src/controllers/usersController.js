@@ -106,10 +106,15 @@ async function login(req, res) {
       { expiresIn: "1h" }
     );
 
-    res.json({
-      message: "Connexion réussie",
-      token
-    });
+  res.cookie("token", token, {
+  httpOnly: true,
+  sameSite: "strict",
+  maxAge: 60 * 60 * 1000
+});
+
+res.json({
+  message: "Connexion réussie"
+});
   } catch (error) {
     res.status(500).json({
       message: "Erreur serveur"
@@ -117,11 +122,23 @@ async function login(req, res) {
   }
 }
 
+async function logout(req, res) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "strict"
+  });
+
+  res.json({
+    message: "Déconnexion réussie"
+  });
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmail,
   createUser,
   login,
+  logout,
   updateUser,
   deleteUser
 };
