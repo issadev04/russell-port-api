@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 
 app.use("/catways", catwaysRouter);
 app.use("/catways", reservationsRouter);
-app.use("/users", authMiddleware, usersRouter);
+app.use("/users", usersRouter);
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
