@@ -46,10 +46,27 @@ async function deleteUser(email) {
   return await User.findOneAndDelete({ email });
 }
 
+async function loginUser(email, password) {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return null;
+  }
+
+  const passwordCorrect = await bcrypt.compare(password, user.password);
+
+  if (!passwordCorrect) {
+    return null;
+  }
+
+  return user;
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmail,
   createUser,
+  loginUser,
   updateUser,
   deleteUser
 };

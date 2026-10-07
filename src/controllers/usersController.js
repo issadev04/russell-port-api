@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const usersService = require("../services/usersService");
 
 async function getAllUsers(req, res) {
@@ -87,10 +88,40 @@ async function deleteUser(req, res) {
   }
 }
 
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    const user = await usersService.loginUser(email, password);
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Email ou mot de passe incorrect"
+      });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({
+      message: "Connexion réussie",
+      token
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur serveur"
+    });
+  }
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmail,
   createUser,
+  login,
   updateUser,
   deleteUser
 };

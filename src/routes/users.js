@@ -6,6 +6,8 @@ const usersController = require("../controllers/usersController");
 
 router.get("/", usersController.getAllUsers);
 
+router.post("/login", usersController.login);
+
 router.get("/:email", usersController.getUserByEmail);
 
 router.post("/", usersController.createUser);
