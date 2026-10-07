@@ -1,4 +1,4 @@
-const Reservation = require("../../models/Reservation");
+const Reservation = require("../models/Reservation");
 
 async function getReservationsByCatway(catwayNumber) {
   return await Reservation.find({ catwayNumber });

@@ -1,0 +1,96 @@
+const usersService = require("../services/usersService");
+
+async function getAllUsers(req, res) {
+  try {
+    const users = await usersService.getAllUsers();
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur serveur"
+    });
+  }
+}
+
+async function getUserByEmail(req, res) {
+  try {
+    const user = await usersService.getUserByEmail(
+      req.params.email
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Utilisateur introuvable"
+      });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur serveur"
+    });
+  }
+}
+
+async function createUser(req, res) {
+  try {
+    const user = await usersService.createUser(req.body);
+
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json({
+      message: "Données invalides"
+    });
+  }
+}
+
+async function updateUser(req, res) {
+  try {
+    const user = await usersService.updateUser(
+      req.params.email,
+      req.body
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Utilisateur introuvable"
+      });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({
+      message: "Données invalides"
+    });
+  }
+}
+
+async function deleteUser(req, res) {
+  try {
+    const user = await usersService.deleteUser(
+      req.params.email
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Utilisateur introuvable"
+      });
+    }
+
+    res.json({
+      message: "Utilisateur supprimé"
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur serveur"
+    });
+  }
+}
+
+module.exports = {
+  getAllUsers,
+  getUserByEmail,
+  createUser,
+  updateUser,
+  deleteUser
+};

@@ -53,11 +53,11 @@ async function createReservation(req, res) {
 async function updateReservation(req, res) {
   try {
     const reservation =
-      await reservationsService.updateReservation(
-        req.params.catwayNumber,
-        req.params.idReservation,
-        req.body
-      );
+  await reservationsService.updateReservation(
+    req.params.catwayNumber,
+    req.body._id,
+    req.body
+  );
 
     if (!reservation) {
       return res.status(404).json({
