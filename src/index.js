@@ -14,12 +14,11 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static("public"));
 
 app.post("/login", usersController.login);
 app.get("/logout", usersController.logout);
-app.get("/", (req, res) => {
-    res.json({ message: "API Port de Plaisance Russell" });
-});
+
 
 app.use("/catways", catwaysRouter);
 app.use("/catways", reservationsRouter);
