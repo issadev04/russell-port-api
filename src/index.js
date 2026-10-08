@@ -46,8 +46,10 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log("MongoDB connecté");
 
-        app.listen(3000, () => {
-            console.log("Serveur démarré sur le port 3000");
+        const PORT = process.env.PORT || 3000;
+
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`Serveur démarré sur le port ${PORT}`);
         });
     })
     .catch((error) => {
