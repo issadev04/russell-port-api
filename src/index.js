@@ -42,16 +42,17 @@ app.use("/catways", reservationsRouter);
 app.use("/users", usersRouter);
 app.use(notFoundMiddleware);
 
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Serveur démarré sur le port ${PORT}`);
+});
+
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log("MongoDB connecté");
-
-        const PORT = process.env.PORT || 3000;
-
-        app.listen(PORT, "0.0.0.0", () => {
-            console.log(`Serveur démarré sur le port ${PORT}`);
-        });
     })
     .catch((error) => {
         console.error("Erreur de connexion MongoDB :", error);
+        process.exit(1);
     });
