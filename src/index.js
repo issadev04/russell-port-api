@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 
-
+const notFoundMiddleware = require("./middlewares/notFoundMiddleware");
+const morgan = require("morgan");
 const usersController = require("./controllers/usersController");
 
 const catwaysRouter = require("./routes/catways");
@@ -13,6 +14,7 @@ const usersRouter = require("./routes/users");
 const app = express();
 
 app.use(express.json());
+app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.static("public"));
 
@@ -23,6 +25,7 @@ app.get("/logout", usersController.logout);
 app.use("/catways", catwaysRouter);
 app.use("/catways", reservationsRouter);
 app.use("/users", usersRouter);
+app.use(notFoundMiddleware);
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
