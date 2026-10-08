@@ -10,6 +10,10 @@ async function getUserByEmail(email) {
 }
 
 async function createUser(data) {
+  if (!data.password || data.password.length < 8) {
+    throw new Error("Le mot de passe doit contenir au moins 8 caractères");
+  }
+
   const hashedPassword = await bcrypt.hash(data.password, 10);
 
   const user = new User({
@@ -26,10 +30,22 @@ async function createUser(data) {
 }
 
 async function updateUser(email, data) {
-  const updateData = { ...data };
+  const updateData = {};
 
-  if (updateData.password) {
-    updateData.password = await bcrypt.hash(updateData.password, 10);
+  if (data.username) {
+    updateData.username = data.username;
+  }
+
+  if (data.email) {
+    updateData.email = data.email;
+  }
+
+  if (data.password) {
+    if (data.password.length < 8) {
+      throw new Error("Le mot de passe doit contenir au moins 8 caractères");
+    }
+
+    updateData.password = await bcrypt.hash(data.password, 10);
   }
 
   return await User.findOneAndUpdate(
