@@ -15,6 +15,7 @@ const dashboardRouter = require("./routes/dashboard");
 const catwaysPageRouter = require("./routes/catwaysPage");
 const reservationsPageRouter = require("./routes/reservationsPage");
 const usersPageRouter = require("./routes/usersPage");
+const documentationRouter = require("./routes/documentation");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -31,6 +32,7 @@ app.use("/dashboard", dashboardRouter);
 app.use("/dashboard/catways", catwaysPageRouter);
 app.use("/dashboard/reservations", reservationsPageRouter);
 app.use("/dashboard/users", usersPageRouter);
+app.use("/documentation", documentationRouter);
 app.post("/login", usersController.login);
 app.get("/logout", usersController.logout);
 
