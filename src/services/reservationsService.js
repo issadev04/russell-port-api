@@ -85,10 +85,24 @@ async function deleteReservation(catwayNumber, idReservation) {
   });
 }
 
+async function getCurrentReservations() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  return await Reservation.find({
+    startDate: { $lt: tomorrow },
+    endDate: { $gte: today }
+  }).sort({ startDate: 1 });
+}
+
 module.exports = {
   getReservationsByCatway,
   getReservationById,
   createReservation,
   updateReservation,
-  deleteReservation
+  deleteReservation,
+  getCurrentReservations
 };

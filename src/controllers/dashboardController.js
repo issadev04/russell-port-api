@@ -1,4 +1,5 @@
 const usersService = require("../services/usersService");
+const reservationsService = require("../services/reservationsService");
 
 async function getDashboard(req, res) {
   try {
@@ -10,9 +11,17 @@ async function getDashboard(req, res) {
       });
     }
 
-    res.render("dashboard", { user });
+    const reservations =
+      await reservationsService.getCurrentReservations();
+
+    return res.render("dashboard", {
+      user,
+      reservations
+    });
   } catch (error) {
-    res.status(500).json({
+    console.error("Erreur tableau de bord :", error.message);
+
+    return res.status(500).json({
       message: "Erreur serveur"
     });
   }
