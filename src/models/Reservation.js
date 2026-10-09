@@ -19,7 +19,13 @@ const reservationSchema = new mongoose.Schema({
   },
   endDate: {
     type: Date,
-    required: true
+    required: true,
+    validate: {
+      validator: function (value) {
+        return value >= this.startDate;
+      },
+      message: "La date de fin doit être postérieure ou égale à la date de début."
+    }
   }
 });
 
