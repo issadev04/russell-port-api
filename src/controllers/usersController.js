@@ -39,6 +39,8 @@ async function createUser(req, res) {
 
     res.status(201).json(user);
   } catch (error) {
+    console.error("Erreur création utilisateur :", error.message);
+
     res.status(400).json({
       message: "Données invalides"
     });
