@@ -22,6 +22,9 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 
 app.use(express.json());
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.static("public", { index: false }));
