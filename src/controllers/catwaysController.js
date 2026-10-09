@@ -1,11 +1,23 @@
 const catwaysService = require("../services/catwaysService");
 
+function handleError(res, error) {
+  if (
+    error.name === "ValidationError" ||
+    error.name === "CastError" ||
+    error.code === 11000
+  ) {
+    return res.status(400).json({ message: "Données invalides" });
+  }
+
+  return res.status(500).json({ message: "Erreur serveur" });
+}
+
 async function getAllCatways(req, res) {
   try {
     const catways = await catwaysService.getAllCatways();
     res.json(catways);
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur" });
+    return handleError(res, error);
   }
 }
 
@@ -21,7 +33,7 @@ async function getCatwayByNumber(req, res) {
 
     res.json(catway);
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur" });
+    return handleError(res, error);
   }
 }
 
@@ -30,7 +42,7 @@ async function createCatway(req, res) {
     const catway = await catwaysService.createCatway(req.body);
     res.status(201).json(catway);
   } catch (error) {
-    res.status(400).json({ message: "Données invalides" });
+    return handleError(res, error);
   }
 }
 
@@ -47,7 +59,7 @@ async function updateCatway(req, res) {
 
     res.json(catway);
   } catch (error) {
-    res.status(400).json({ message: "Données invalides" });
+    return handleError(res, error);
   }
 }
 
@@ -63,7 +75,7 @@ async function deleteCatway(req, res) {
 
     res.json({ message: "Catway supprimé" });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur" });
+    return handleError(res, error);
   }
 }
 
@@ -72,5 +84,6 @@ module.exports = {
   getCatwayByNumber,
   createCatway,
   updateCatway,
-  deleteCatway
+  deleteCatway,
+  handleError
 };
