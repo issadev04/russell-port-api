@@ -108,17 +108,19 @@ async function login(req, res) {
       { expiresIn: "1h" }
     );
 
-res.cookie("token", token, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",
-  maxAge: 60 * 60 * 1000
-});
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000
+    });
 
-res.json({
-  message: "Connexion réussie"
-});
+    res.json({
+      message: "Connexion réussie"
+    });
   } catch (error) {
+    console.error("Erreur login :", error);
+
     res.status(500).json({
       message: "Erreur serveur"
     });
