@@ -26,6 +26,7 @@ Elle comprend une API REST, une interface web d'administration et une documentat
 - `src/middlewares/` : authentification et gestion des erreurs.
 - `views/` : vues EJS.
 - `public/` : fichiers statiques.
+
 ## Installation
 
 Prérequis : Node.js, npm et une base de données MongoDB accessible.
@@ -52,7 +53,7 @@ Démarrage en développement :
 npm run dev
 ```
 
-Le démarrage standard utilise .env.prod. Le mode développement utilise .env.dev.
+Le démarrage standard utilise `.env.prod`. Le mode développement utilise `.env.dev`.
 
 Ne publiez jamais les fichiers d'environnement contenant des secrets.
 
@@ -64,13 +65,21 @@ Ne publiez jamais les fichiers d'environnement contenant des secrets.
 - Gestion des réservations.
 - Interface web d'administration.
 - Documentation de l'API.
-- Route de contrôle de santé : /health.
+- Route de contrôle de santé : `/health`.
 
 ## Application déployée
 
-- Accueil : https://russell-port-api-chcj.onrender.com/
-- Documentation : https://russell-port-api-chcj.onrender.com/documentation
-- Contrôle de santé : https://russell-port-api-chcj.onrender.com/health
+- **Accueil :** https://russell-port-api-chcj.onrender.com/
+- **Documentation :** https://russell-port-api-chcj.onrender.com/documentation
+- **Contrôle de santé :** https://russell-port-api-chcj.onrender.com/health
+
+## Identifiants de démonstration
+
+- **Nom d'utilisateur :** `TestConnexion`
+- **Adresse e-mail :** `test.connexion2026@example.com`
+- **Mot de passe :** `PortRussell2026!`
+
+Ces identifiants sont destinés à la démonstration de l'application.
 
 ## Sécurité
 
@@ -82,5 +91,3 @@ Ne publiez jamais les fichiers d'environnement contenant des secrets.
 ## Licence
 
 Projet pédagogique.
-
-
