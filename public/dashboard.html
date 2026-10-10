@@ -8,9 +8,9 @@
 </head>
 
 <body>
-
     <h1>Tableau de bord</h1>
 
+    <!-- Navigation principale du tableau de bord. -->
     <nav>
         <a href="/dashboard.html">Tableau de bord</a>
         <a href="#">Catways</a>
@@ -20,12 +20,14 @@
         <a href="#" id="logout">Se déconnecter</a>
     </nav>
 
+    <!-- Informations sur l'utilisateur connecté. -->
     <h2>Utilisateur connecté</h2>
 
     <p>Nom : <span id="username">-</span></p>
     <p>Email : <span id="email">-</span></p>
     <p>Date : <span id="date"></span></p>
 
+    <!-- Tableau des réservations en cours. -->
     <h2>Réservations en cours</h2>
 
     <table border="1">
@@ -43,13 +45,16 @@
     </table>
 
     <script>
+        // Affiche la date du jour au format français.
         document.getElementById("date").textContent =
             new Date().toLocaleDateString("fr-FR");
 
+        // Récupère les utilisateurs depuis l'API.
         fetch("/users", {
             credentials: "include"
         })
             .then(response => {
+                // Redirige vers la page d'accueil si l'accès est refusé.
                 if (!response.ok) {
                     window.location.href = "/";
                     return;
@@ -58,28 +63,34 @@
                 return response.json();
             })
             .then(users => {
+                // Arrête le traitement si aucune donnée n'a été reçue.
                 if (!users) return;
 
+                // Récupère le premier utilisateur de la liste.
                 const user = users[0];
 
+                // Affiche le nom de l'utilisateur.
                 document.getElementById("username").textContent =
                     user.username;
 
+                // Affiche l'adresse e-mail de l'utilisateur.
                 document.getElementById("email").textContent =
                     user.email;
             });
 
+        // Gère la déconnexion de l'utilisateur.
         document.getElementById("logout").addEventListener("click", async (event) => {
             event.preventDefault();
 
+            // Envoie une requête de déconnexion à l'API.
             await fetch("/logout", {
                 credentials: "include"
             });
 
+            // Redirige vers la page d'accueil.
             window.location.href = "/";
         });
     </script>
-
 </body>
 
 </html>

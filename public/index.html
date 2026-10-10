@@ -8,9 +8,9 @@
 </head>
 
 <body>
-
     <h1>Port de plaisance Russell</h1>
 
+    <!-- Formulaire de connexion. -->
     <h2>Connexion</h2>
 
     <form id="loginForm">
@@ -23,17 +23,23 @@
         <button type="submit">Se connecter</button>
     </form>
 
+    <!-- Message affiché en cas d'erreur de connexion. -->
     <p id="message"></p>
 
     <script>
+        // Récupère le formulaire de connexion.
         const loginForm = document.getElementById("loginForm");
 
+        // Gère l'envoi du formulaire.
         loginForm.addEventListener("submit", async (event) => {
+            // Empêche le rechargement automatique de la page.
             event.preventDefault();
 
+            // Récupère les identifiants saisis par l'utilisateur.
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
 
+            // Envoie les identifiants à l'API pour authentification.
             const response = await fetch("/login", {
                 method: "POST",
                 headers: {
@@ -46,16 +52,18 @@
                 })
             });
 
+            // Récupère la réponse de l'API.
             const data = await response.json();
 
+            // Redirige vers le tableau de bord si la connexion réussit.
             if (response.ok) {
-    window.location.href = "/dashboard.html";
-} else {
-    document.getElementById("message").textContent = data.message;
-}
+                window.location.href = "/dashboard.html";
+            } else {
+                // Affiche le message d'erreur retourné par l'API.
+                document.getElementById("message").textContent = data.message;
+            }
         });
     </script>
-
 </body>
 
 </html>

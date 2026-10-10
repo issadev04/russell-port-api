@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Utilisateurs - Port de plaisance Russell</title>
 </head>
-
 <body>
-
     <h1>Gestion des utilisateurs</h1>
 
+    <!-- Lien de retour vers le tableau de bord -->
     <p>
         <a href="/dashboard">Retour au tableau de bord</a>
     </p>
 
+    <!-- Formulaire d'ajout d'un utilisateur -->
     <h2>Ajouter un utilisateur</h2>
 
     <form id="createUserForm">
-
         <label for="username">Nom :</label>
         <input type="text" id="username" required>
 
@@ -29,16 +27,15 @@
         <input type="password" id="password" required>
 
         <button type="submit">Ajouter</button>
-
     </form>
 
+    <!-- Zone d'affichage du résultat de la création -->
     <p id="message"></p>
 
-
+    <!-- Formulaire de modification d'un utilisateur -->
     <h2>Modifier un utilisateur</h2>
 
     <form id="updateUserForm">
-
         <label for="updateEmail">Email actuel :</label>
         <input type="email" id="updateEmail" required>
 
@@ -52,16 +49,15 @@
         <input type="password" id="updatePassword">
 
         <button type="submit">Modifier</button>
-
     </form>
 
+    <!-- Zone d'affichage du résultat de la modification -->
     <p id="updateMessage"></p>
 
-
+    <!-- Tableau de la liste des utilisateurs -->
     <h2>Liste des utilisateurs</h2>
 
     <table border="1">
-
         <thead>
             <tr>
                 <th>Nom</th>
@@ -69,33 +65,30 @@
                 <th>Action</th>
             </tr>
         </thead>
-
         <tbody id="users"></tbody>
-
     </table>
 
-
     <script>
-
+        // Récupère et affiche la liste des utilisateurs
         async function loadUsers() {
-
             const response = await fetch("/users", {
                 credentials: "include"
             });
 
+            // Redirige vers la page d'accueil si la requête échoue
             if (!response.ok) {
                 window.location.href = "/";
                 return;
             }
 
             const users = await response.json();
-
             const table = document.getElementById("users");
 
+            // Vide le tableau avant d'afficher les données actualisées
             table.innerHTML = "";
 
+            // Crée une ligne du tableau pour chaque utilisateur
             users.forEach(user => {
-
                 const row = document.createElement("tr");
 
                 row.innerHTML = `
@@ -109,97 +102,81 @@
                 `;
 
                 table.appendChild(row);
-
             });
         }
 
-
+        // Gère l'envoi du formulaire de création d'un utilisateur
         document.getElementById("createUserForm")
             .addEventListener("submit", async (event) => {
-
+                // Empêche le rechargement automatique de la page
                 event.preventDefault();
 
+                // Envoie les informations saisies à l'API
                 const response = await fetch("/users", {
-
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/json"
                     },
-
                     credentials: "include",
-
                     body: JSON.stringify({
-
                         username:
                             document.getElementById("username").value,
-
                         email:
                             document.getElementById("email").value,
-
                         password:
                             document.getElementById("password").value
-
                     })
-
                 });
 
                 const data = await response.json();
 
+                // Affiche le message renvoyé par l'API
                 document.getElementById("message").textContent =
                     data.message || "Utilisateur ajouté";
 
+                // Réinitialise le formulaire et actualise la liste si la création réussit
                 if (response.ok) {
-
                     document
                         .getElementById("createUserForm")
                         .reset();
 
                     loadUsers();
-
                 }
-
             });
 
-
+        // Gère l'envoi du formulaire de modification d'un utilisateur
         document.getElementById("updateUserForm")
             .addEventListener("submit", async (event) => {
-
+                // Empêche le rechargement automatique de la page
                 event.preventDefault();
 
+                // Récupère l'adresse e-mail actuelle de l'utilisateur
                 const currentEmail =
                     document.getElementById("updateEmail").value;
 
+                // Envoie les modifications à l'API
                 const response = await fetch(
                     `/users/${encodeURIComponent(currentEmail)}`,
                     {
-
                         method: "PUT",
-
                         headers: {
                             "Content-Type": "application/json"
                         },
-
                         credentials: "include",
-
                         body: JSON.stringify({
-
                             username:
                                 document.getElementById("updateUsername").value,
-
                             email:
                                 document.getElementById("updateNewEmail").value,
-
                             password:
                                 document.getElementById("updatePassword").value
-
                         })
-
                     }
                 );
 
                 const data = await response.json();
 
+                // Affiche le résultat de la modification
                 document.getElementById("updateMessage").textContent =
                     data.message || (
                         response.ok
@@ -207,47 +184,40 @@
                             : "Erreur lors de la modification"
                     );
 
+                // Réinitialise le formulaire et actualise la liste si la modification réussit
                 if (response.ok) {
-
                     document
                         .getElementById("updateUserForm")
                         .reset();
 
                     loadUsers();
-
                 }
-
             });
 
-
+        // Supprime un utilisateur à partir de son adresse e-mail
         async function deleteUser(email) {
-
+            // Envoie une requête DELETE à l'API
             const response = await fetch(
                 `/users/${encodeURIComponent(email)}`,
                 {
-
                     method: "DELETE",
-
                     credentials: "include"
-
                 }
             );
 
             const data = await response.json();
 
+            // Affiche le résultat de la suppression
             alert(data.message || "Utilisateur supprimé");
 
+            // Actualise la liste si la suppression réussit
             if (response.ok) {
                 loadUsers();
             }
-
         }
 
-
+        // Charge la liste des utilisateurs au chargement de la page
         loadUsers();
-
     </script>
-
 </body>
-
 </html>

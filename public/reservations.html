@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservations - Port de plaisance Russell</title>
 </head>
+
 <body>
     <h1>Gestion des réservations</h1>
 
+    <!-- Lien de retour au tableau de bord. -->
     <p>
         <a href="/dashboard.html">Retour au tableau de bord</a>
     </p>
 
+    <!-- Sélection du catway dont on souhaite consulter les réservations. -->
     <h2>Choisir un catway</h2>
 
-    <input type="number" id="catwayNumber" placeholder="Numéro du catway">
+    <input
+        type="number"
+        id="catwayNumber"
+        placeholder="Numéro du catway"
+    >
+
     <button id="loadReservations">Afficher les réservations</button>
 
+    <!-- Formulaire d'ajout d'une réservation. -->
     <h2>Ajouter une réservation</h2>
 
     <form id="createReservationForm">
@@ -38,8 +48,10 @@
         <button type="submit">Ajouter</button>
     </form>
 
+    <!-- Message affiché après une tentative d'ajout. -->
     <p id="message"></p>
 
+    <!-- Formulaire de modification d'une réservation existante. -->
     <h2>Modifier une réservation</h2>
 
     <form id="updateReservationForm">
@@ -64,8 +76,10 @@
         <button type="submit">Modifier</button>
     </form>
 
+    <!-- Message affiché après une tentative de modification. -->
     <p id="updateMessage"></p>
 
+    <!-- Tableau contenant les réservations du catway sélectionné. -->
     <h2>Liste des réservations</h2>
 
     <table border="1">
@@ -80,23 +94,31 @@
                 <th>Action</th>
             </tr>
         </thead>
+
         <tbody id="reservations"></tbody>
     </table>
 
     <script>
+        // Déclenche le chargement des réservations au clic sur le bouton.
         document
             .getElementById("loadReservations")
             .addEventListener("click", loadReservations);
 
+        /**
+         * Récupère et affiche les réservations d'un catway.
+         */
         async function loadReservations() {
+            // Récupère le numéro du catway saisi par l'utilisateur.
             const catwayNumber =
                 document.getElementById("catwayNumber").value;
 
+            // Demande un numéro de catway avant de poursuivre.
             if (!catwayNumber) {
                 alert("Indique un numéro de catway");
                 return;
             }
 
+            // Interroge l'API pour récupérer les réservations du catway.
             const response = await fetch(
                 `/catways/${catwayNumber}/reservations`,
                 {
@@ -104,16 +126,20 @@
                 }
             );
 
+            // Redirige vers la page d'accueil si la requête échoue.
             if (!response.ok) {
                 window.location.href = "/";
                 return;
             }
 
+            // Convertit la réponse de l'API en données JavaScript.
             const reservations = await response.json();
-            const table = document.getElementById("reservations");
 
+            // Récupère le tableau et efface son contenu précédent.
+            const table = document.getElementById("reservations");
             table.innerHTML = "";
 
+            // Ajoute une ligne pour chaque réservation reçue.
             reservations.forEach(reservation => {
                 const row = document.createElement("tr");
 
@@ -135,14 +161,18 @@
             });
         }
 
+        // Gère l'envoi du formulaire de création d'une réservation.
         document
             .getElementById("createReservationForm")
             .addEventListener("submit", async (event) => {
+                // Empêche le rechargement automatique de la page.
                 event.preventDefault();
 
+                // Récupère le numéro du catway concerné.
                 const catwayNumber =
                     document.getElementById("createCatwayNumber").value;
 
+                // Envoie une requête POST pour créer la réservation.
                 const response = await fetch(
                     `/catways/${catwayNumber}/reservations`,
                     {
@@ -165,8 +195,10 @@
                     }
                 );
 
+                // Récupère le résultat de la création.
                 const data = await response.json();
 
+                // Affiche le message retourné par l'API.
                 document.getElementById("message").textContent =
                     data.message || (
                         response.ok
@@ -174,6 +206,7 @@
                             : "Erreur lors de la création"
                     );
 
+                // Recharge les réservations si la création a réussi.
                 if (response.ok) {
                     document.getElementById("catwayNumber").value =
                         catwayNumber;
@@ -182,17 +215,22 @@
                 }
             });
 
+        // Gère l'envoi du formulaire de modification d'une réservation.
         document
             .getElementById("updateReservationForm")
             .addEventListener("submit", async (event) => {
+                // Empêche le rechargement automatique de la page.
                 event.preventDefault();
 
+                // Récupère le numéro du catway concerné.
                 const catwayNumber =
                     document.getElementById("updateCatwayNumber").value;
 
+                // Récupère l'identifiant de la réservation à modifier.
                 const idReservation =
                     document.getElementById("updateId").value.trim();
 
+                // Envoie une requête PUT pour modifier la réservation.
                 const response = await fetch(
                     `/catways/${catwayNumber}/reservations/${idReservation}`,
                     {
@@ -215,8 +253,10 @@
                     }
                 );
 
+                // Récupère le résultat de la modification.
                 const data = await response.json();
 
+                // Affiche le message retourné par l'API.
                 document.getElementById("updateMessage").textContent =
                     data.message || (
                         response.ok
@@ -224,6 +264,7 @@
                             : "Erreur lors de la modification"
                     );
 
+                // Recharge les réservations si la modification a réussi.
                 if (response.ok) {
                     document.getElementById("catwayNumber").value =
                         catwayNumber;
@@ -232,7 +273,14 @@
                 }
             });
 
+        /**
+         * Supprime une réservation.
+         *
+         * @param {string} idReservation - Identifiant de la réservation.
+         * @param {number} catwayNumber - Numéro du catway associé.
+         */
         async function deleteReservation(idReservation, catwayNumber) {
+            // Envoie une requête DELETE pour supprimer la réservation.
             const response = await fetch(
                 `/catways/${catwayNumber}/reservations/${idReservation}`,
                 {
@@ -241,18 +289,22 @@
                 }
             );
 
+            // Récupère le résultat de la suppression.
             const data = await response.json();
 
+            // Affiche le message retourné par l'API.
             alert(data.message || (
                 response.ok
                     ? "Réservation supprimée"
                     : "Erreur lors de la suppression"
             ));
 
+            // Actualise la liste si la suppression a réussi.
             if (response.ok) {
                 await loadReservations();
             }
         }
     </script>
 </body>
+
 </html>

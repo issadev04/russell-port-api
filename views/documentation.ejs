@@ -1,170 +1,176 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentation API - Port de plaisance Russell</title>
-  </head>
-
-  <body>
+</head>
+<body>
+    <!-- Navigation vers le tableau de bord -->
     <nav>
-      <a href="/dashboard">Tableau de bord</a>
+        <a href="/dashboard">Tableau de bord</a>
     </nav>
 
     <h1>Documentation de l'API</h1>
 
+    <!-- Présentation générale de l'API -->
     <p>
-      API du Port de plaisance Russell permettant la gestion des catways, des
-      réservations et des utilisateurs.
+        API du Port de plaisance Russell permettant la gestion des catways, des
+        réservations et des utilisateurs.
     </p>
 
+    <!-- Documentation des routes relatives aux catways -->
     <h2>Catways</h2>
 
     <table border="1">
-      <thead>
-        <tr>
-          <th>Méthode</th>
-          <th>Route</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>GET</td>
-          <td>/catways</td>
-          <td>Récupérer tous les catways</td>
-        </tr>
-        <tr>
-          <td>GET</td>
-          <td>/catways/:id</td>
-          <td>Récupérer un catway</td>
-        </tr>
-        <tr>
-          <td>POST</td>
-          <td>/catways</td>
-          <td>Créer un catway</td>
-        </tr>
-        <tr>
-          <td>PUT</td>
-          <td>/catways/:id</td>
-          <td>Modifier un catway</td>
-        </tr>
-        <tr>
-          <td>DELETE</td>
-          <td>/catways/:id</td>
-          <td>Supprimer un catway</td>
-        </tr>
-      </tbody>
+        <thead>
+            <tr>
+                <th>Méthode</th>
+                <th>Route</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>/catways</td>
+                <td>Récupérer tous les catways</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/catways/:id</td>
+                <td>Récupérer un catway</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/catways</td>
+                <td>Créer un catway</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/catways/:id</td>
+                <td>Modifier un catway</td>
+            </tr>
+            <tr>
+                <td>DELETE</td>
+                <td>/catways/:id</td>
+                <td>Supprimer un catway</td>
+            </tr>
+        </tbody>
     </table>
 
+    <!-- Documentation des routes relatives aux réservations -->
     <h2>Réservations</h2>
 
     <table border="1">
-      <thead>
-        <tr>
-          <th>Méthode</th>
-          <th>Route</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>GET</td>
-          <td>/catways/:catwayNumber/reservations</td>
-          <td>Récupérer les réservations d'un catway</td>
-        </tr>
-        <tr>
-          <td>GET</td>
-          <td>/catways/:catwayNumber/reservations/:idReservation</td>
-          <td>Récupérer une réservation</td>
-        </tr>
-        <tr>
-          <td>POST</td>
-          <td>/catways/:catwayNumber/reservations</td>
-          <td>Créer une réservation</td>
-        </tr>
-        <tr>
-          <td>PUT</td>
-          <td>/catways/:catwayNumber/reservations/:idReservation</td>
-          <td>Modifier une réservation</td>
-        </tr>
-        <tr>
-          <td>DELETE</td>
-          <td>/catways/:catwayNumber/reservations/:idReservation</td>
-          <td>Supprimer une réservation</td>
-        </tr>
-      </tbody>
+        <thead>
+            <tr>
+                <th>Méthode</th>
+                <th>Route</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>/catways/:catwayNumber/reservations</td>
+                <td>Récupérer les réservations d'un catway</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/catways/:catwayNumber/reservations/:idReservation</td>
+                <td>Récupérer une réservation</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/catways/:catwayNumber/reservations</td>
+                <td>Créer une réservation</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/catways/:catwayNumber/reservations/:idReservation</td>
+                <td>Modifier une réservation</td>
+            </tr>
+            <tr>
+                <td>DELETE</td>
+                <td>/catways/:catwayNumber/reservations/:idReservation</td>
+                <td>Supprimer une réservation</td>
+            </tr>
+        </tbody>
     </table>
 
+    <!-- Documentation des routes relatives aux utilisateurs -->
     <h2>Utilisateurs</h2>
 
     <table border="1">
-      <thead>
-        <tr>
-          <th>Méthode</th>
-          <th>Route</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>GET</td>
-          <td>/users/</td>
-          <td>Récupérer tous les utilisateurs</td>
-        </tr>
-        <tr>
-          <td>GET</td>
-          <td>/users/:email</td>
-          <td>Récupérer un utilisateur</td>
-        </tr>
-        <tr>
-          <td>POST</td>
-          <td>/users/</td>
-          <td>Créer un utilisateur</td>
-        </tr>
-        <tr>
-          <td>PUT</td>
-          <td>/users/:email</td>
-          <td>Modifier un utilisateur</td>
-        </tr>
-        <tr>
-          <td>DELETE</td>
-          <td>/users/:email</td>
-          <td>Supprimer un utilisateur</td>
-        </tr>
-      </tbody>
+        <thead>
+            <tr>
+                <th>Méthode</th>
+                <th>Route</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>/users/</td>
+                <td>Récupérer tous les utilisateurs</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/users/:email</td>
+                <td>Récupérer un utilisateur</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/users/</td>
+                <td>Créer un utilisateur</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/users/:email</td>
+                <td>Modifier un utilisateur</td>
+            </tr>
+            <tr>
+                <td>DELETE</td>
+                <td>/users/:email</td>
+                <td>Supprimer un utilisateur</td>
+            </tr>
+        </tbody>
     </table>
 
+    <!-- Documentation des routes d'authentification -->
     <h2>Authentification</h2>
 
     <table border="1">
-      <thead>
-        <tr>
-          <th>Méthode</th>
-          <th>Route</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>POST</td>
-          <td>/login</td>
-          <td>Authentifier un utilisateur</td>
-        </tr>
-        <tr>
-          <td>GET</td>
-          <td>/logout</td>
-          <td>Déconnecter l'utilisateur</td>
-        </tr>
-      </tbody>
+        <thead>
+            <tr>
+                <th>Méthode</th>
+                <th>Route</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>POST</td>
+                <td>/login</td>
+                <td>Authentifier un utilisateur</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/logout</td>
+                <td>Déconnecter l'utilisateur</td>
+            </tr>
+        </tbody>
     </table>
 
+    <!-- Explication du fonctionnement de l'authentification -->
     <h2>Authentification des routes</h2>
 
     <p>
-      Certaines routes nécessitent une authentification. Après connexion, un
-      cookie contenant le jeton d'authentification est utilisé pour accéder aux
-      ressources protégées.
+        Certaines routes nécessitent une authentification. Après connexion, un
+        cookie contenant le jeton d'authentification est utilisé pour accéder aux
+        ressources protégées.
     </p>
-  </body>
+</body>
 </html>

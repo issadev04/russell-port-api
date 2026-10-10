@@ -6,17 +6,17 @@
     <title>Utilisateurs - Port de plaisance Russell</title>
 </head>
 <body>
-
     <h1>Gestion des utilisateurs</h1>
 
+    <!-- Lien de retour vers le tableau de bord -->
     <p>
         <a href="/dashboard.html">Retour au tableau de bord</a>
     </p>
 
+    <!-- Formulaire d'ajout d'un utilisateur -->
     <h2>Ajouter un utilisateur</h2>
 
     <form id="createUserForm">
-
         <label for="username">Nom :</label>
         <input type="text" id="username" required>
 
@@ -27,11 +27,12 @@
         <input type="password" id="password" required>
 
         <button type="submit">Ajouter</button>
-
     </form>
 
+    <!-- Zone d'affichage du résultat de l'ajout -->
     <p id="message"></p>
 
+    <!-- Tableau de la liste des utilisateurs -->
     <h2>Liste des utilisateurs</h2>
 
     <table border="1">
@@ -42,18 +43,17 @@
                 <th>Action</th>
             </tr>
         </thead>
-
         <tbody id="users"></tbody>
     </table>
 
     <script>
-
+        // Récupère et affiche la liste des utilisateurs
         async function loadUsers() {
-
             const response = await fetch("/users", {
                 credentials: "include"
             });
 
+            // Redirige vers la page d'accueil si la requête échoue
             if (!response.ok) {
                 window.location.href = "/";
                 return;
@@ -62,10 +62,11 @@
             const users = await response.json();
             const table = document.getElementById("users");
 
+            // Vide le tableau avant d'afficher les données actualisées
             table.innerHTML = "";
 
+            // Crée une ligne pour chaque utilisateur
             users.forEach(user => {
-
                 const row = document.createElement("tr");
 
                 row.innerHTML = `
@@ -82,10 +83,10 @@
             });
         }
 
-
+        // Gère l'envoi du formulaire de création d'un utilisateur
         document.getElementById("createUserForm")
             .addEventListener("submit", async (event) => {
-
+                // Empêche le rechargement de la page lors de l'envoi
                 event.preventDefault();
 
                 const response = await fetch("/users", {
@@ -103,18 +104,19 @@
 
                 const data = await response.json();
 
+                // Affiche le message renvoyé par l'API
                 document.getElementById("message").textContent =
                     data.message || "Utilisateur ajouté";
 
+                // Réinitialise le formulaire et actualise la liste si la création réussit
                 if (response.ok) {
                     document.getElementById("createUserForm").reset();
                     loadUsers();
                 }
             });
 
-
+        // Supprime un utilisateur à partir de son adresse e-mail
         async function deleteUser(email) {
-
             const response = await fetch(
                 `/users/${encodeURIComponent(email)}`,
                 {
@@ -125,17 +127,17 @@
 
             const data = await response.json();
 
+            // Informe l'utilisateur du résultat de la suppression
             alert(data.message || "Utilisateur supprimé");
 
+            // Actualise la liste uniquement si la suppression réussit
             if (response.ok) {
                 loadUsers();
             }
         }
 
-
+        // Charge la liste des utilisateurs au chargement de la page
         loadUsers();
-
     </script>
-
 </body>
 </html>
