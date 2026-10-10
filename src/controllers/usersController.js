@@ -3,10 +3,11 @@ const usersService = require("../services/usersService");
 
 function handleError(res, error) {
   if (
-    error.name === "ValidationError" ||
-    error.name === "CastError" ||
-    error.code === 11000
-  ) {
+  error.name === "ValidationError" ||
+  error.name === "CastError" ||
+  error.code === 11000 ||
+  error.message.includes("Le mot de passe doit contenir au moins 8")
+) {
     return res.status(400).json({
       message: "Données invalides"
     });
