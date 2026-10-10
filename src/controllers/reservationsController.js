@@ -66,6 +66,7 @@ async function updateReservation(req, res) {
 
     res.json(reservation);
   } catch (error) {
+    console.error("Erreur updateReservation :", error);
     res.status(400).json({
       message: "Données invalides",
     });
