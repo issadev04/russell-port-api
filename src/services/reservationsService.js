@@ -2,6 +2,12 @@ const Reservation = require("../models/Reservation");
 const Catway = require("../models/Catway");
 
 async function getReservationsByCatway(catwayNumber) {
+  const catway = await Catway.findOne({ catwayNumber });
+
+  if (!catway) {
+    throw new Error("Catway introuvable");
+  }
+
   return await Reservation.find({ catwayNumber });
 }
 
@@ -33,6 +39,7 @@ async function createReservation(data) {
   }
 
   const reservation = new Reservation(data);
+
   return await reservation.save();
 }
 

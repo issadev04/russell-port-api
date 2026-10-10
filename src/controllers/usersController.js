@@ -1,23 +1,35 @@
 const jwt = require("jsonwebtoken");
 const usersService = require("../services/usersService");
 
+function handleError(res, error) {
+  if (
+    error.name === "ValidationError" ||
+    error.name === "CastError" ||
+    error.code === 11000
+  ) {
+    return res.status(400).json({
+      message: "Données invalides"
+    });
+  }
+
+  return res.status(500).json({
+    message: "Erreur serveur"
+  });
+}
+
 async function getAllUsers(req, res) {
   try {
     const users = await usersService.getAllUsers();
 
-    res.json(users);
+    return res.json(users);
   } catch (error) {
-    res.status(500).json({
-      message: "Erreur serveur"
-    });
+    return handleError(res, error);
   }
 }
 
 async function getUserByEmail(req, res) {
   try {
-    const user = await usersService.getUserByEmail(
-      req.params.email
-    );
+    const user = await usersService.getUserByEmail(req.params.email);
 
     if (!user) {
       return res.status(404).json({
@@ -25,11 +37,9 @@ async function getUserByEmail(req, res) {
       });
     }
 
-    res.json(user);
+    return res.json(user);
   } catch (error) {
-    res.status(500).json({
-      message: "Erreur serveur"
-    });
+    return handleError(res, error);
   }
 }
 
@@ -37,13 +47,11 @@ async function createUser(req, res) {
   try {
     const user = await usersService.createUser(req.body);
 
-    res.status(201).json(user);
+    return res.status(201).json(user);
   } catch (error) {
     console.error("Erreur création utilisateur :", error.message);
 
-    res.status(400).json({
-      message: "Données invalides"
-    });
+    return handleError(res, error);
   }
 }
 
@@ -60,19 +68,15 @@ async function updateUser(req, res) {
       });
     }
 
-    res.json(user);
+    return res.json(user);
   } catch (error) {
-    res.status(400).json({
-      message: "Données invalides"
-    });
+    return handleError(res, error);
   }
 }
 
 async function deleteUser(req, res) {
   try {
-    const user = await usersService.deleteUser(
-      req.params.email
-    );
+    const user = await usersService.deleteUser(req.params.email);
 
     if (!user) {
       return res.status(404).json({
@@ -80,19 +84,23 @@ async function deleteUser(req, res) {
       });
     }
 
-    res.json({
+    return res.json({
       message: "Utilisateur supprimé"
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Erreur serveur"
-    });
+    return handleError(res, error);
   }
 }
 
 async function login(req, res) {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email et mot de passe obligatoires"
+      });
+    }
 
     const user = await usersService.loginUser(email, password);
 
@@ -103,9 +111,14 @@ async function login(req, res) {
     }
 
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      {
+        userId: user._id,
+        email: user.email
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      {
+        expiresIn: "1h"
+      }
     );
 
     res.cookie("token", token, {
@@ -115,13 +128,13 @@ async function login(req, res) {
       maxAge: 60 * 60 * 1000
     });
 
-    res.json({
+    return res.json({
       message: "Connexion réussie"
     });
   } catch (error) {
-    console.error("Erreur login :", error);
+    console.error("Erreur login :", error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Erreur serveur"
     });
   }
@@ -130,10 +143,11 @@ async function login(req, res) {
 async function logout(req, res) {
   res.clearCookie("token", {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "strict"
   });
 
-  res.json({
+  return res.json({
     message: "Déconnexion réussie"
   });
 }
@@ -145,5 +159,6 @@ module.exports = {
   login,
   logout,
   updateUser,
-  deleteUser
+  deleteUser,
+  handleError
 };

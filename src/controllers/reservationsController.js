@@ -7,9 +7,19 @@ async function getReservationsByCatway(req, res) {
         req.params.catwayNumber
       );
 
-    res.json(reservations);
+    return res.json(reservations);
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur" });
+    if (error.message === "Catway introuvable") {
+      return res.status(404).json({
+        message: "Catway introuvable"
+      });
+    }
+
+    console.error("Erreur getReservationsByCatway :", error);
+
+    return res.status(500).json({
+      message: "Erreur serveur"
+    });
   }
 }
 
@@ -23,14 +33,14 @@ async function getReservationById(req, res) {
 
     if (!reservation) {
       return res.status(404).json({
-        message: "Réservation introuvable",
+        message: "Réservation introuvable"
       });
     }
 
-    res.json(reservation);
+    return res.json(reservation);
   } catch (error) {
-    res.status(400).json({
-      message: "Identifiant de réservation invalide",
+    return res.status(400).json({
+      message: "Identifiant de réservation invalide"
     });
   }
 }
@@ -39,13 +49,21 @@ async function createReservation(req, res) {
   try {
     const reservation = await reservationsService.createReservation({
       ...req.body,
-      catwayNumber: req.params.catwayNumber,
+      catwayNumber: req.params.catwayNumber
     });
 
-    res.status(201).json(reservation);
+    return res.status(201).json(reservation);
   } catch (error) {
-    res.status(400).json({
-      message: "Données invalides",
+    console.error("Erreur createReservation :", error);
+
+    if (error.message === "Catway introuvable") {
+      return res.status(404).json({
+        message: "Catway introuvable"
+      });
+    }
+
+    return res.status(400).json({
+      message: "Données invalides"
     });
   }
 }
@@ -60,15 +78,16 @@ async function updateReservation(req, res) {
 
     if (!reservation) {
       return res.status(404).json({
-        message: "Réservation introuvable",
+        message: "Réservation introuvable"
       });
     }
 
-    res.json(reservation);
+    return res.json(reservation);
   } catch (error) {
     console.error("Erreur updateReservation :", error);
-    res.status(400).json({
-      message: "Données invalides",
+
+    return res.status(400).json({
+      message: "Données invalides"
     });
   }
 }
@@ -83,16 +102,16 @@ async function deleteReservation(req, res) {
 
     if (!reservation) {
       return res.status(404).json({
-        message: "Réservation introuvable",
+        message: "Réservation introuvable"
       });
     }
 
-    res.json({
-      message: "Réservation supprimée",
+    return res.json({
+      message: "Réservation supprimée"
     });
   } catch (error) {
-    res.status(400).json({
-      message: "Identifiant de réservation invalide",
+    return res.status(400).json({
+      message: "Identifiant de réservation invalide"
     });
   }
 }
@@ -102,5 +121,5 @@ module.exports = {
   getReservationById,
   createReservation,
   updateReservation,
-  deleteReservation,
+  deleteReservation
 };
