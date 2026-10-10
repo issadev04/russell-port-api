@@ -13,7 +13,6 @@ async function getReservationById(catwayNumber, idReservation) {
 }
 
 async function createReservation(data) {
-
   const startDate = new Date(data.startDate);
   const endDate = new Date(data.endDate);
 
@@ -26,20 +25,18 @@ async function createReservation(data) {
   }
 
   const catway = await Catway.findOne({
-  catwayNumber: data.catwayNumber
-});
+    catwayNumber: data.catwayNumber
+  });
 
-if (!catway) {
-  throw new Error("Catway introuvable");
-}
+  if (!catway) {
+    throw new Error("Catway introuvable");
+  }
 
   const reservation = new Reservation(data);
-
   return await reservation.save();
 }
 
 async function updateReservation(catwayNumber, idReservation, data) {
-
   const reservation = await Reservation.findOne({
     _id: idReservation,
     catwayNumber
@@ -49,13 +46,13 @@ async function updateReservation(catwayNumber, idReservation, data) {
     return null;
   }
 
-  const updatedData = {
-    ...reservation.toObject(),
-    ...data
-  };
+  reservation.clientName = data.clientName ?? reservation.clientName;
+  reservation.boatName = data.boatName ?? reservation.boatName;
+  reservation.startDate = data.startDate ?? reservation.startDate;
+  reservation.endDate = data.endDate ?? reservation.endDate;
 
-  const startDate = new Date(updatedData.startDate);
-  const endDate = new Date(updatedData.endDate);
+  const startDate = new Date(reservation.startDate);
+  const endDate = new Date(reservation.endDate);
 
   if (
     isNaN(startDate.getTime()) ||
@@ -65,17 +62,7 @@ async function updateReservation(catwayNumber, idReservation, data) {
     throw new Error("Dates de réservation invalides");
   }
 
-  return await Reservation.findOneAndUpdate(
-    {
-      _id: idReservation,
-      catwayNumber
-    },
-    data,
-    {
-      new: true,
-      runValidators: true
-    }
-  );
+  return await reservation.save();
 }
 
 async function deleteReservation(catwayNumber, idReservation) {
