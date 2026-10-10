@@ -190,7 +190,7 @@
                     document.getElementById("updateCatwayNumber").value;
 
                 const response = await fetch(
-                    `/catways/${catwayNumber}/reservations`,
+                    `/catways/${catwayNumber}/reservations/${document.getElementById("updateId").value.trim()}`,
                     {
                         method: "PUT",
                         headers: {
