@@ -1,8 +1,9 @@
 const express = require("express");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", authMiddleware, (req, res) => {
     res.render("catways");
 });
 
