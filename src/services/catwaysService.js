@@ -13,10 +13,10 @@ async function createCatway(data) {
   return await catway.save();
 }
 
-async function updateCatway(catwayNumber, catwayState) {
+async function updateCatway(catwayNumber, data) {
   return await Catway.findOneAndUpdate(
     { catwayNumber },
-    { catwayState },
+    data,
     { new: true, runValidators: true }
   );
 }

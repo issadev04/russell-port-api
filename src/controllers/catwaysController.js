@@ -50,7 +50,7 @@ async function updateCatway(req, res) {
   try {
     const catway = await catwaysService.updateCatway(
       req.params.catwayNumber,
-      req.body.catwayState
+      req.body
     );
 
     if (!catway) {
