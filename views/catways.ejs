@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catways - Port de plaisance Russell</title>
+</head>
+
+<body>
+
+    <h1>Gestion des catways</h1>
+
+    <p><a href="/dashboard">Retour au tableau de bord</a></p>
+
+    <h2>Liste des catways</h2>
+    <h2>Ajouter un catway</h2>
+
+<form id="createCatwayForm">
+
+    <label for="catwayNumber">Numéro :</label>
+    <input type="number" id="catwayNumber" required>
+
+    <label for="catwayType">Type :</label>
+    <select id="catwayType" required>
+        <option value="short">short</option>
+        <option value="long">long</option>
+    </select>
+
+    <label for="catwayState">État :</label>
+    <input type="text" id="catwayState" required>
+
+    <button type="submit">Ajouter</button>
+
+</form>
+
+<h2>Modifier un catway</h2>
+
+<form id="updateCatwayForm">
+
+    <label for="updateCatwayNumber">Numéro :</label>
+    <input type="number" id="updateCatwayNumber" required>
+
+    <label for="updateCatwayState">Nouvel état :</label>
+    <input type="text" id="updateCatwayState" required>
+
+    <button type="submit">Modifier</button>
+
+</form>
+
+<p id="updateMessage"></p>
+
+<p id="message"></p>
+
+    <table border="1">
+        <thead>
+            <tr>
+    <th>Numéro</th>
+    <th>Type</th>
+    <th>État</th>
+    <th>Action</th>
+</tr>
+        </thead>
+
+        <tbody id="catways"></tbody>
+    </table>
+
+    <script>
+        fetch("/catways", {
+            credentials: "include"
+        })
+            .then(response => {
+                if (!response.ok) {
+                    window.location.href = "/";
+                    return;
+                }
+
+                return response.json();
+            })
+            .then(catways => {
+                if (!catways) return;
+
+                const table = document.getElementById("catways");
+
+                catways.forEach(catway => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+    <td>${catway.catwayNumber}</td>
+    <td>${catway.catwayType}</td>
+    <td>${catway.catwayState}</td>
+    <td>
+        <button onclick="deleteCatway(${catway.catwayNumber})">
+            Supprimer
+        </button>
+    </td>
+`;
+
+                    table.appendChild(row);
+                });
+            });
+            document.getElementById("createCatwayForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const catwayNumber = document.getElementById("catwayNumber").value;
+    const catwayType = document.getElementById("catwayType").value;
+    const catwayState = document.getElementById("catwayState").value;
+
+    const response = await fetch("/catways", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            catwayNumber: Number(catwayNumber),
+            catwayType,
+            catwayState
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("message").textContent =
+        data.message || "Catway ajouté";
+
+    if (response.ok) {
+        location.reload();
+    }
+});
+
+document.getElementById("updateCatwayForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const catwayNumber = document.getElementById("updateCatwayNumber").value;
+    const catwayState = document.getElementById("updateCatwayState").value;
+
+    const response = await fetch(`/catways/${catwayNumber}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            catwayState
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("updateMessage").textContent =
+        data.message || "Catway modifié";
+
+    if (response.ok) {
+        location.reload();
+    }
+});
+
+async function deleteCatway(catwayNumber) {
+    const response = await fetch(`/catways/${catwayNumber}`, {
+        method: "DELETE",
+        credentials: "include"
+    });
+
+    const data = await response.json();
+
+    alert(data.message || "Catway supprimé");
+
+    if (response.ok) {
+        location.reload();
+    }
+}
+    </script>
+
+</body>
+
+</html>

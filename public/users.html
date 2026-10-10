@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilisateurs - Port de plaisance Russell</title>
+</head>
+<body>
+
+    <h1>Gestion des utilisateurs</h1>
+
+    <p>
+        <a href="/dashboard.html">Retour au tableau de bord</a>
+    </p>
+
+    <h2>Ajouter un utilisateur</h2>
+
+    <form id="createUserForm">
+
+        <label for="username">Nom :</label>
+        <input type="text" id="username" required>
+
+        <label for="email">Email :</label>
+        <input type="email" id="email" required>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" required>
+
+        <button type="submit">Ajouter</button>
+
+    </form>
+
+    <p id="message"></p>
+
+    <h2>Liste des utilisateurs</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="users"></tbody>
+    </table>
+
+    <script>
+
+        async function loadUsers() {
+
+            const response = await fetch("/users", {
+                credentials: "include"
+            });
+
+            if (!response.ok) {
+                window.location.href = "/";
+                return;
+            }
+
+            const users = await response.json();
+            const table = document.getElementById("users");
+
+            table.innerHTML = "";
+
+            users.forEach(user => {
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>
+                        <button onclick="deleteUser('${user.email}')">
+                            Supprimer
+                        </button>
+                    </td>
+                `;
+
+                table.appendChild(row);
+            });
+        }
+
+
+        document.getElementById("createUserForm")
+            .addEventListener("submit", async (event) => {
+
+                event.preventDefault();
+
+                const response = await fetch("/users", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        username: document.getElementById("username").value,
+                        email: document.getElementById("email").value,
+                        password: document.getElementById("password").value
+                    })
+                });
+
+                const data = await response.json();
+
+                document.getElementById("message").textContent =
+                    data.message || "Utilisateur ajouté";
+
+                if (response.ok) {
+                    document.getElementById("createUserForm").reset();
+                    loadUsers();
+                }
+            });
+
+
+        async function deleteUser(email) {
+
+            const response = await fetch(
+                `/users/${encodeURIComponent(email)}`,
+                {
+                    method: "DELETE",
+                    credentials: "include"
+                }
+            );
+
+            const data = await response.json();
+
+            alert(data.message || "Utilisateur supprimé");
+
+            if (response.ok) {
+                loadUsers();
+            }
+        }
+
+
+        loadUsers();
+
+    </script>
+
+</body>
+</html>

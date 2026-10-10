@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservations - Port de plaisance Russell</title>
+</head>
+<body>
+
+    <h1>Gestion des réservations</h1>
+
+    <p>
+        <a href="/dashboard.html">Retour au tableau de bord</a>
+    </p>
+
+    <h2>Choisir un catway</h2>
+
+    <input type="number" id="catwayNumber" placeholder="Numéro du catway">
+    <button id="loadReservations">Afficher les réservations</button>
+
+    <h2>Ajouter une réservation</h2>
+
+    <form id="createReservationForm">
+
+        <label for="createCatwayNumber">Catway :</label>
+        <input type="number" id="createCatwayNumber" required>
+
+        <label for="clientName">Client :</label>
+        <input type="text" id="clientName" required>
+
+        <label for="boatName">Bateau :</label>
+        <input type="text" id="boatName" required>
+
+        <label for="startDate">Date de début :</label>
+        <input type="date" id="startDate" required>
+
+        <label for="endDate">Date de fin :</label>
+        <input type="date" id="endDate" required>
+
+        <button type="submit">Ajouter</button>
+
+    </form>
+
+    <p id="message"></p>
+
+    <h2>Modifier une réservation</h2>
+
+    <form id="updateReservationForm">
+
+        <label for="updateId">ID de la réservation :</label>
+        <input type="text" id="updateId" required>
+
+        <label for="updateCatwayNumber">Catway :</label>
+        <input type="number" id="updateCatwayNumber" required>
+
+        <label for="updateClientName">Client :</label>
+        <input type="text" id="updateClientName" required>
+
+        <label for="updateBoatName">Bateau :</label>
+        <input type="text" id="updateBoatName" required>
+
+        <label for="updateStartDate">Date de début :</label>
+        <input type="date" id="updateStartDate" required>
+
+        <label for="updateEndDate">Date de fin :</label>
+        <input type="date" id="updateEndDate" required>
+
+        <button type="submit">Modifier</button>
+
+    </form>
+
+    <p id="updateMessage"></p>
+
+    <h2>Liste des réservations</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Catway</th>
+                <th>Client</th>
+                <th>Bateau</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="reservations"></tbody>
+    </table>
+
+    <script>
+
+        document.getElementById("loadReservations").addEventListener("click", loadReservations);
+
+        async function loadReservations() {
+
+            const catwayNumber = document.getElementById("catwayNumber").value;
+
+            if (!catwayNumber) {
+                alert("Indique un numéro de catway");
+                return;
+            }
+
+            const response = await fetch(
+                `/catways/${catwayNumber}/reservations`,
+                {
+                    credentials: "include"
+                }
+            );
+
+            if (!response.ok) {
+                window.location.href = "/";
+                return;
+            }
+
+            const reservations = await response.json();
+
+            const table = document.getElementById("reservations");
+
+            table.innerHTML = "";
+
+            reservations.forEach(reservation => {
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${reservation._id}</td>
+                    <td>${reservation.catwayNumber}</td>
+                    <td>${reservation.clientName}</td>
+                    <td>${reservation.boatName}</td>
+                    <td>${reservation.startDate.substring(0, 10)}</td>
+                    <td>${reservation.endDate.substring(0, 10)}</td>
+                    <td>
+                        <button onclick="deleteReservation('${reservation._id}', ${reservation.catwayNumber})">
+                            Supprimer
+                        </button>
+                    </td>
+                `;
+
+                table.appendChild(row);
+            });
+        }
+
+
+        document.getElementById("createReservationForm")
+            .addEventListener("submit", async (event) => {
+
+                event.preventDefault();
+
+                const catwayNumber =
+                    document.getElementById("createCatwayNumber").value;
+
+                const response = await fetch(
+                    `/catways/${catwayNumber}/reservations`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        credentials: "include",
+                        body: JSON.stringify({
+                            catwayNumber: Number(catwayNumber),
+                            clientName: document.getElementById("clientName").value,
+                            boatName: document.getElementById("boatName").value,
+                            startDate: document.getElementById("startDate").value,
+                            endDate: document.getElementById("endDate").value
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                document.getElementById("message").textContent =
+                    data.message || "Réservation ajoutée";
+
+                if (response.ok) {
+                    document.getElementById("catwayNumber").value = catwayNumber;
+                    loadReservations();
+                }
+            });
+
+
+        document.getElementById("updateReservationForm")
+            .addEventListener("submit", async (event) => {
+
+                event.preventDefault();
+
+                const catwayNumber =
+                    document.getElementById("updateCatwayNumber").value;
+
+                const response = await fetch(
+                    `/catways/${catwayNumber}/reservations`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        credentials: "include",
+                        body: JSON.stringify({
+                            _id: document.getElementById("updateId").value,
+                            catwayNumber: Number(catwayNumber),
+                            clientName: document.getElementById("updateClientName").value,
+                            boatName: document.getElementById("updateBoatName").value,
+                            startDate: document.getElementById("updateStartDate").value,
+                            endDate: document.getElementById("updateEndDate").value
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                document.getElementById("updateMessage").textContent =
+                    data.message || "Réservation modifiée";
+
+                if (response.ok) {
+                    document.getElementById("catwayNumber").value = catwayNumber;
+                    loadReservations();
+                }
+            });
+
+
+        async function deleteReservation(idReservation, catwayNumber) {
+
+            const response = await fetch(
+                `/catways/${catwayNumber}/reservations/${idReservation}`,
+                {
+                    method: "DELETE",
+                    credentials: "include"
+                }
+            );
+
+            const data = await response.json();
+
+            alert(data.message || "Réservation supprimée");
+
+            if (response.ok) {
+                loadReservations();
+            }
+        }
+
+    </script>
+
+</body>
+</html>
