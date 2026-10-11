@@ -32,19 +32,16 @@ async function createCatway(data) {
 }
 
 /**
- * Modifie un catway identifié par son numéro.
- *
- * Les validateurs du modèle sont exécutés avant l'enregistrement
- * des modifications.
+ * Modifie uniquement l'état d'un catway identifié par son numéro.
  *
  * @param {number|string} catwayNumber - Numéro du catway à modifier.
- * @param {Object} data - Données à modifier.
+ * @param {Object} data - Données de modification.
  * @returns {Promise<Object|null>} Catway modifié ou null si absent.
  */
 async function updateCatway(catwayNumber, data) {
     return Catway.findOneAndUpdate(
         { catwayNumber },
-        data,
+        { catwayState: data.catwayState },
         {
             new: true,
             runValidators: true
